@@ -1,6 +1,5 @@
 import os
-import sys
-sys.path.append(r'F:\speechtest\算法与数据\code0106')
+#sys.path.append(r'/kaggle/working/speechtest')
 import tensorflow as tf
 from utils import get_data, data_hparams
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau,TensorBoard

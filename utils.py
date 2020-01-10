@@ -109,9 +109,7 @@ class get_data():
 				end = begin + self.batch_size
 				sub_list = shuffle_list[begin:end]
 				for index in sub_list:
-					##这里我已经算好STFT了，直接导入STFT即可,不用computfbank了
-					fbank = np.fromfile(self.wav_lst[index],dtype=np.float64)# self.data_path +  这里给的是路径了
-					fbank.shape=len(fbank)//200,200
+					fbank = compute_fbank(self.wav_lst[index])
 					##归一化
 					fbank=(fbank-fbank.mean())/fbank.std()
 					pad_fbank = np.zeros((fbank.shape[0] // 8 * 8 + 8, fbank.shape[1]))
