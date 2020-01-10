@@ -100,13 +100,13 @@ dev_batch = dev_data.get_am_batch()
 
 # tensorborad查看整个模型训练过程
 tbCallBack = TensorBoard(log_dir="./logs_am/model")
-LOG_DIR = './logs_am/model'
-get_ipython().system_raw(
-    'tensorboard --logdir {} --host 0.0.0.0 --port 6006 &'
-    .format(LOG_DIR)
-)
-get_ipython().system_raw('./ngrok http 6006 &')
-!curl -s http://localhost:4040/api/tunnels | python3 -c \"import sys, json; print(json.load(sys.stdin)['tunnels'][0]['public_url'])"
+#LOG_DIR = './logs_am/model'
+#get_ipython().system_raw(
+#    'tensorboard --logdir {} --host 0.0.0.0 --port 6006 &'
+#    .format(LOG_DIR)
+#)
+#get_ipython().system_raw('./ngrok http 6006 &')
+#!curl -s http://localhost:4040/api/tunnels | python3 -c \"import sys, json; print(json.load(sys.stdin)['tunnels'][0]['public_url'])"
 
 
 
@@ -148,13 +148,13 @@ with tf.Session(graph=lm.graph) as sess:
 	# 	add_num = int(latest.split('_')[-1])
 	# 	saver.restore(sess, latest)
 	writer = tf.summary.FileWriter('./logs_lm/tensorboard', tf.get_default_graph())
-    LOG_DIR = './logs_lm/tensorboard'
-    get_ipython().system_raw(
-    'tensorboard --logdir {} --host 0.0.0.0 --port 6006 &'
-    .format(LOG_DIR)
-    )
-    get_ipython().system_raw('./ngrok http 6006 &')
-    !curl -s http://localhost:4040/api/tunnels | python3 -c \"import sys, json; print(json.load(sys.stdin)['tunnels'][0]['public_url'])"
+    #LOG_DIR = './logs_lm/tensorboard'
+    #get_ipython().system_raw(
+    #'tensorboard --logdir {} --host 0.0.0.0 --port 6006 &'
+    #.format(LOG_DIR)
+    #)
+    #get_ipython().system_raw('./ngrok http 6006 &')
+    #!curl -s http://localhost:4040/api/tunnels | python3 -c \"import sys, json; print(json.load(sys.stdin)['tunnels'][0]['public_url'])"
 	for k in range(epochs):
 		total_loss = 0
 		batch = train_data.get_lm_batch()
