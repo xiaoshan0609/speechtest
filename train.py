@@ -112,7 +112,7 @@ tbCallBack = TensorBoard(log_dir="./logs_am/model")
 print('声学模型开始训练')
 
 if am_args.gpu_nums <= 1:
-	am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[checkpoint，tbCallBack], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
+	am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[tbCallBack], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
 	# 这个带上面就报错
 	#am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs,  workers=1,use_multiprocessing=False )
 
