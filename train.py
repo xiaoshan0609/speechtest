@@ -8,13 +8,13 @@ from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau,Te
 
 import keras.backend.tensorflow_backend as ktf
 # 指定GPUID, 第一块GPU可用
-# os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1, 2, 3"
-# # GPU 显存自动分配
-# config = tf.ConfigProto(allow_soft_placement=True)
-# config.gpu_options.allow_growth=True
+os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1, 2, 3"
+# GPU 显存自动分配
+config = tf.ConfigProto(allow_soft_placement=True)
+config.gpu_options.allow_growth=True
 # #config.gpu_options.per_process_gpu_memory_fraction = 0.3
-# session = tf.Session(config=config)
-# ktf.set_session(session)
+session = tf.Session(config=config)
+ktf.set_session(session)
 
 # class MyCbk(keras.callbacks.Callback):
 	# def __init__(self, model):
@@ -62,7 +62,7 @@ dev_data = get_data(data_args)
 from model_speech.cnn_ctc import Am, am_hparams
 am_args = am_hparams()
 am_args.vocab_size = len(train_data.am_vocab)
-am_args.gpu_nums = 0
+am_args.gpu_nums = 1
 am_args.lr = 1e-4
 am_args.is_training = True
 am = Am(am_args)
@@ -81,8 +81,9 @@ print("batch_num_val:", batch_num_val)
 # checkpoint
 
 #ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
-#ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
-#checkpoint = ModelCheckpoint(os.path.join('F:/speechtest/算法与数据/code0106/checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
+ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
+run_config = tf.estimator.RunConfig(keep_checkpoint_max = 3)
+checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
 
 #checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
 #checkpoint = MyCbk(am.ctc_model, os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
@@ -108,10 +109,10 @@ tbCallBack = TensorBoard(log_dir="./logs_am/model")
 #get_ipython().system_raw('./ngrok http 6006 &')
 #!curl -s http://localhost:4040/api/tunnels | python3 -c \"import sys, json; print(json.load(sys.stdin)['tunnels'][0]['public_url'])"
 
-
+print('声学模型开始训练')
 
 if am_args.gpu_nums <= 1:
-	am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[tbCallBack], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
+	am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[checkpoint，tbCallBack], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
 	# 这个带上面就报错
 	#am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs,  workers=1,use_multiprocessing=False )
 
@@ -136,6 +137,7 @@ lm_args.is_training = True
 lm = Lm(lm_args)
 
 epochs = 100
+print('语言模型开始训练')
 with lm.graph.as_default():
 	saver =tf.train.Saver()
 with tf.Session(graph=lm.graph) as sess:
