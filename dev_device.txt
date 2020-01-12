@@ -1,4 +1,3 @@
-wav_file	pny	words
 /kaggle/input/magicdata/dev_device/dev_byte(Android)/wave_1.bin	niu1 niu1 jin1 tian1 wo3 men liao2 shen2 me ne	妞妞 今天我们聊什么呢
 /kaggle/input/magicdata/dev_device/dev_byte(Android)/wave_2.bin	wo3 men jin1 tian1 liao2 dong4 wu4	我们今天聊动物
 /kaggle/input/magicdata/dev_device/dev_byte(Android)/wave_3.bin	hao3 ba	好吧
