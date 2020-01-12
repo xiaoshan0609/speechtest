@@ -23,12 +23,12 @@ ktf.set_session(session)
 		# ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
 		# self.model_to_save.save(os.path.join('./checkpoint', ckpt))
 		
-class MyCbk(ModelCheckpoint):
-	def __init__(self, model, filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1):
-		self.single_model = model
-		super(MyCbk, self).__init__(filepath, monitor, verbose, save_best_only, save_weights_only, mode, period)
-	def set_model(self, model):
-		super(MyCbk, self).set_model(self.single_model)
+#class MyCbk(ModelCheckpoint):
+	#def __init__(self, model, filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1):
+		#self.single_model = model
+		#super(MyCbk, self).__init__(filepath, monitor, verbose, save_best_only, save_weights_only, mode, period)
+	#def set_model(self, model):
+		#super(MyCbk, self).set_model(self.single_model)
 
 		
 # 0.准备训练所需数据------------------------------
@@ -81,8 +81,8 @@ print("batch_num_val:", batch_num_val)
 # checkpoint
 
 #ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
-ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
-run_config = tf.estimator.RunConfig(keep_checkpoint_max = 3)
+#ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
+#run_config = tf.estimator.RunConfig(keep_checkpoint_max = 3)
 checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
 
 #checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
@@ -115,10 +115,8 @@ if am_args.gpu_nums <= 1:
 	am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[tbCallBack], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
 	# 这个带上面就报错
 	#am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs,  workers=1,use_multiprocessing=False )
-
 else:
 	am.parallel_ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[earlystopping, reducelronplateau, checkpoint], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
-
 am.ctc_model.save_weights('./logs_am/model.h5')
 
 
