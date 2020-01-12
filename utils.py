@@ -110,6 +110,7 @@ class get_data():
 				sub_list = shuffle_list[begin:end]
 				for index in sub_list:
 					fbank = compute_fbank(self.wav_lst[index])
+                    
 					##归一化
 					fbank=(fbank-fbank.mean())/fbank.std()
 					pad_fbank = np.zeros((fbank.shape[0] // 8 * 8 + 8, fbank.shape[1]))
@@ -252,7 +253,7 @@ def compute_mfcc(file):
 
 # 获取信号的时频图
 def compute_fbank(file):
-	_path = file.replace(".bin", ".npz")
+	_path = file
 	try:
 		if os.path.exists(_path):
 			_data = np.load(_path)["data"]
@@ -264,6 +265,7 @@ def compute_fbank(file):
 	# fs, wavsignal = wav.read(file)
 	fs = 16000
 	wavsignal = np.fromfile(file, dtype=np.int16)
+    print('文件路径'+file)
 	# wav波形 加时间窗以及时移10ms
 	time_window = 25  # 单位ms
 	wav_arr = wavsignal # np.array(wavsignal)
