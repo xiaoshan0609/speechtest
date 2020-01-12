@@ -265,7 +265,7 @@ def compute_fbank(file):
 	# fs, wavsignal = wav.read(file)
 	fs = 16000
 	wavsignal = np.fromfile(file, dtype=np.int16)
-    print('文件路径'+file)
+        print('文件路径'+file)
 	# wav波形 加时间窗以及时移10ms
 	time_window = 25  # 单位ms
 	wav_arr = wavsignal # np.array(wavsignal)
