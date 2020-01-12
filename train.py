@@ -83,7 +83,7 @@ print("batch_num_val:", batch_num_val)
 #ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
 #ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
 #run_config = tf.estimator.RunConfig(keep_checkpoint_max = 3)
-checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
+#checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
 
 #checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
 #checkpoint = MyCbk(am.ctc_model, os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
