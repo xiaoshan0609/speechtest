@@ -253,16 +253,8 @@ def compute_mfcc(file):
 
 # 获取信号的时频图
 def compute_fbank(file):
-	#_path = file.replace(".bin", ".npz")
-	#try:
-	#	if os.path.exists(_path):
-	#		_data = np.load(_path)["data"]
-	#		return _data
-	#except Exception as e:
-	#print("Error:", e)
 	x = np.linspace(0, 400 - 1, 400, dtype=np.int64)
-	w = 0.54 - 0.46 * np.cos(2 * np.pi * (x) / (400 - 1))  # 汉明窗
-	# fs, wavsignal = wav.read(file)
+	w = 0.54 - 0.46 * np.cos(2 * np.pi * (x) / (400 - 1))
 	fs = 16000
 	wavsignal = np.fromfile(file, dtype=np.int16)
 	# wav波形 加时间窗以及时移10ms
