@@ -8,7 +8,7 @@ from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau,Te
 
 import keras.backend.tensorflow_backend as ktf
 # 指定GPUID, 第一块GPU可用
-os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1, 2, 3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0，1，2，3"
 # GPU 显存自动分配
 config = tf.ConfigProto(allow_soft_placement=True)
 config.gpu_options.allow_growth=True
@@ -71,7 +71,7 @@ am = Am(am_args)
 	# print('load acoustic model...')
 	# am.ctc_model.load_weights('checkpoint/model_04-86.93.hdf5')
 
-epochs = 100
+epochs = 6
 batch_num = len(train_data.wav_lst) // train_data.batch_size
 print("len(train_data.wav_lst):", len(train_data.wav_lst))
 print("batch_num:", batch_num)
@@ -136,7 +136,7 @@ lm_args.lr = 0.0001
 lm_args.is_training = True
 lm = Lm(lm_args)
 
-epochs = 100
+epochs = 66
 print('语言模型开始训练')
 with lm.graph.as_default():
 	saver =tf.train.Saver()
