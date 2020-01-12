@@ -253,7 +253,7 @@ def compute_mfcc(file):
 
 # 获取信号的时频图
 def compute_fbank(file):
-	_path = file
+	_path = file.replace(".bin", ".npz")
 	try:
 		if os.path.exists(_path):
 			_data = np.load(_path)["data"]
