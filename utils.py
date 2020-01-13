@@ -5,7 +5,7 @@ import tensorflow as tf
 import scipy.io.wavfile as wav
 from tqdm import tqdm
 from scipy.fftpack import fft
-# from python_speech_features import mfcc
+
 from random import shuffle
 
 def data_hparams():
