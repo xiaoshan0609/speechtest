@@ -40,7 +40,7 @@ data_args.data_path = './dataset/'
 # data_args.prime = True
 # data_args.stcmd = True
 data_args.magicdata = True
-data_args.batch_size = 16
+data_args.batch_size = 32
 # data_args.data_length = None
 data_args.shuffle = True
 train_data = get_data(data_args)
@@ -53,7 +53,7 @@ data_args.thchs30 = False
 data_args.aishell = False
 data_args.prime = False
 data_args.stcmd = False
-data_args.batch_size = 16
+data_args.batch_size = 32
 # data_args.data_length = None
 data_args.shuffle = True
 dev_data = get_data(data_args)
@@ -84,6 +84,8 @@ print("batch_num_val:", batch_num_val)
 ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
 run_config = tf.estimator.RunConfig(keep_checkpoint_max = 3)
 checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
+earlystopping = EarlyStopping(monitor='val_loss', verbose=1, patience=3, restore_best_weights=True)
+reducelronplateau = ReduceLROnPlateau(monitor="val_loss", verbose=1, mode='min', factor=0.1, patience=1)
 
 #checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
 #checkpoint = MyCbk(am.ctc_model, os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
@@ -107,7 +109,7 @@ tbCallBack = TensorBoard(log_dir="./logs_am/model")
 print('声学模型开始训练')
 
 if am_args.gpu_nums <= 1:
-	am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[checkpoint,tbCallBack], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
+	am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[earlystopping, reducelronplateau, checkpoint,tbCallBack], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
 	# 这个带上面就报错
 	#am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs,  workers=1,use_multiprocessing=False )
 else:
