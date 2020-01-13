@@ -23,12 +23,12 @@ ktf.set_session(session)
 		# ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
 		# self.model_to_save.save(os.path.join('./checkpoint', ckpt))
 		
-#class MyCbk(ModelCheckpoint):
-	#def __init__(self, model, filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1):
-		#self.single_model = model
-		#super(MyCbk, self).__init__(filepath, monitor, verbose, save_best_only, save_weights_only, mode, period)
-	#def set_model(self, model):
-		#super(MyCbk, self).set_model(self.single_model)
+class MyCbk(ModelCheckpoint):
+	def __init__(self, model, filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1):
+		self.single_model = model
+		super(MyCbk, self).__init__(filepath, monitor, verbose, save_best_only, save_weights_only, mode, period)
+	def set_model(self, model):
+		super(MyCbk, self).set_model(self.single_model)
 
 		
 # 0.准备训练所需数据------------------------------
@@ -81,9 +81,9 @@ print("batch_num_val:", batch_num_val)
 # checkpoint
 
 #ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
-#ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
-#run_config = tf.estimator.RunConfig(keep_checkpoint_max = 3)
-#checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
+ckpt = "model_{epoch:02d}-{val_loss:.2f}.hdf5"
+run_config = tf.estimator.RunConfig(keep_checkpoint_max = 3)
+checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
 
 #checkpoint = ModelCheckpoint(os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
 #checkpoint = MyCbk(am.ctc_model, os.path.join('./checkpoint', ckpt), monitor='val_loss', save_weights_only=False, verbose=1, save_best_only=True)
@@ -100,23 +100,18 @@ batch = train_data.get_am_batch()
 dev_batch = dev_data.get_am_batch()
 
 # tensorborad查看整个模型训练过程
-tbCallBack = TensorBoard(log_dir="./logs_am/model")
-#LOG_DIR = './logs_am/model'
-#get_ipython().system_raw(
-#    'tensorboard --logdir {} --host 0.0.0.0 --port 6006 &'
-#    .format(LOG_DIR)
-#)
-#get_ipython().system_raw('./ngrok http 6006 &')
-#!curl -s http://localhost:4040/api/tunnels | python3 -c \"import sys, json; print(json.load(sys.stdin)['tunnels'][0]['public_url'])"
+#tbCallBack = TensorBoard(log_dir="./logs_am/model")  #在穿透中给出
+
+
 
 print('声学模型开始训练')
 
 if am_args.gpu_nums <= 1:
-	am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[tbCallBack], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
+	am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[checkpoint,tbCallBack], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
 	# 这个带上面就报错
 	#am.ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs,  workers=1,use_multiprocessing=False )
 else:
-	am.parallel_ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[earlystopping, reducelronplateau, checkpoint], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
+	am.parallel_ctc_model.fit_generator(batch, steps_per_epoch=batch_num, epochs=epochs, callbacks=[checkpoint,tbCallBack], workers=1, use_multiprocessing=False, validation_data=dev_batch, validation_steps=batch_num_val)
 am.ctc_model.save_weights('./logs_am/model.h5')
 
 
@@ -148,13 +143,6 @@ with tf.Session(graph=lm.graph) as sess:
 	# 	add_num = int(latest.split('_')[-1])
 	# 	saver.restore(sess, latest)
 	writer = tf.summary.FileWriter('./logs_lm/tensorboard', tf.get_default_graph())
-    #LOG_DIR = './logs_lm/tensorboard'
-    #get_ipython().system_raw(
-    #'tensorboard --logdir {} --host 0.0.0.0 --port 6006 &'
-    #.format(LOG_DIR)
-    #)
-    #get_ipython().system_raw('./ngrok http 6006 &')
-    #!curl -s http://localhost:4040/api/tunnels | python3 -c \"import sys, json; print(json.load(sys.stdin)['tunnels'][0]['public_url'])"
 	for k in range(epochs):
 		total_loss = 0
 		batch = train_data.get_lm_batch()
