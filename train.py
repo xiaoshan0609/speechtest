@@ -100,7 +100,7 @@ batch = train_data.get_am_batch()
 dev_batch = dev_data.get_am_batch()
 
 # tensorborad查看整个模型训练过程
-#tbCallBack = TensorBoard(log_dir="./logs_am/model")  #在穿透中给出
+tbCallBack = TensorBoard(log_dir="./logs_am/model")  #在穿透中给出
 
 
 
