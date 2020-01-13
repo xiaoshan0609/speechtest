@@ -71,7 +71,7 @@ am = Am(am_args)
 	# print('load acoustic model...')
 	# am.ctc_model.load_weights('checkpoint/model_04-86.93.hdf5')
 
-epochs = 12
+epochs = 8
 batch_num = len(train_data.wav_lst) // train_data.batch_size
 print("len(train_data.wav_lst):", len(train_data.wav_lst))
 print("batch_num:", batch_num)
